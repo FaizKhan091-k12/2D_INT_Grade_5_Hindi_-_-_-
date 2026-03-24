@@ -11,10 +11,12 @@ public class MainMenuBehaviour : MonoBehaviour
    [SerializeField] private Transform midPanel;
    [SerializeField] private Transform topPanel;
    [SerializeField] Transform[] leftbuttons, rightbuttons;
-   
+   [SerializeField] private Transform hintPanelBG, hintPanel;
    void Start()
    {
       if (isTesting) return;
+      hintPanel.localScale = Vector3.zero;
+      hintPanelBG.gameObject.SetActive(false);
       tittleTop.localScale = Vector3.zero;
       playButton.localScale = Vector3.zero;
       mainLevel.localScale = Vector3.zero;
@@ -49,6 +51,7 @@ public class MainMenuBehaviour : MonoBehaviour
    void PlayButtonAnim()
    {
       playButton.GetComponent<UIHoverClickEffect>().enableIdlePulse = true;
+      AudioManager.instance.PlayStartSound();
    }
 
    public void PlayButtonClick()
@@ -93,6 +96,26 @@ public class MainMenuBehaviour : MonoBehaviour
          rightbuttons[i].DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
          yield return new WaitForSeconds(.1f);
       }
+      
+      AudioManager.instance.PlayLevelSound();
+   }
+
+   public void OpenHintPanel()
+   {
+      hintPanelBG.gameObject.SetActive(true);
+      hintPanel.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+   }
+
+   public void CloseHintPanel()
+   {
+      hintPanel.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack).OnComplete(() => HintBG());
+      // Invoke(nameof(HintBG),.5f);
+   }
+
+   void HintBG()
+   {
+      hintPanelBG.gameObject.SetActive(false);
+
    }
 
 }
